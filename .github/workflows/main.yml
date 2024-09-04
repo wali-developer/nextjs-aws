@@ -2,7 +2,8 @@ name: Deploy Nextjs application to AWS EC2
 
 on:
   push:
-    branches: -main
+    branches:
+      - main
 
 jobs:
   build:
