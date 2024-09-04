@@ -1,0 +1,31 @@
+name: Deploy Nextjs application to AWS EC2
+
+on:
+  push:
+    branches: -main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+      - name: Create .env file
+        run: echo "SITE_URL=${{ secrets.SITE_URL }}" >> .env
+      - name: Build docker image
+        run: docker build -t walideveloper/nextjs-aws .
+      - name: Login to docker hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Publish image to docker hub
+        run: docker push walideveloper/nextjs-aws:latest
+
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Pull image from docker
+        run: docker pull walideveloper/nextjs-aws:latest
+      - name: Delete old container
+        run: docker rm -f nextjs-app-container
+      - name: Run new container
+        run: docker run -d -p 3000:3000 --name nextjs-app-container walideveloper/nextjs-aws
