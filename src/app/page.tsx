@@ -4,6 +4,7 @@ export default function Home() {
       <h1 className="text-5xl text-blue-700 text-center">
         NextJS Application deployed to the AWS EC2
       </h1>
+      <p className="text-lg text-gray-700 text-center">Checking for CI / CD</p>
     </main>
   );
 }
